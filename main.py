@@ -39,14 +39,14 @@ def main() -> None:
 
     engine = Engine(entities=entities, event_handler=event_handler, game_map=game_map, player=player)
 
-    with tcod.context.new_terminal(
-            screen_width,
-            screen_height,
+    with tcod.context.new(
+            columns=screen_width,
+            rows=screen_height,
             tileset=tileset,
             title="Oops I Barfed, a roguelike game",
             vsync=True,
     ) as context:
-        root_console = tcod.Console(screen_width, screen_height, order="F")
+        root_console = tcod.console.Console(screen_width, screen_height, order="F")
         while True:
             engine.render(console=root_console, context=context)
 
