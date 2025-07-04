@@ -57,6 +57,7 @@ class EventHandler(tcod.event.EventDispatch[Action]):
             self.dispatch(event)
 
     def ev_mousemotion(self, event: tcod.event.MouseMotion) -> None:
+        # TODO: update to use event.position
         if self.engine.game_map.in_bounds(int(event.tile.x), int(event.tile.y)):
             self.engine.mouse_location = int(event.tile.x), int(event.tile.y)
 
@@ -135,7 +136,7 @@ CURSOR_Y_KEYS = {
 
 
 class HistoryViewer(EventHandler):
-    """Print the history on a larger window which can be navigated."""
+    """Print the history in a larger window which can be navigated."""
 
     def __init__(self, engine: Engine):
         super().__init__(engine)
