@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import random
 from typing import Dict, Iterator, List, Tuple, TYPE_CHECKING
 
@@ -12,7 +13,6 @@ from game_map import GameMap
 if TYPE_CHECKING:
     from engine import Engine
     from entity import Entity
-
 
 max_items_by_floor = [
     (1, 1),
@@ -110,7 +110,7 @@ class RectangularRoom:
         )
 
 
-def place_entities(room: RectangularRoom, dungeon: GameMap, floor_number: int,) -> None:
+def place_entities(room: RectangularRoom, dungeon: GameMap, floor_number: int, ) -> None:
     number_of_monsters = random.randint(
         0, get_max_value_for_floor(max_monsters_by_floor, floor_number)
     )
@@ -129,7 +129,7 @@ def place_entities(room: RectangularRoom, dungeon: GameMap, floor_number: int,) 
         x = random.randint(room.x1 + 1, room.x2 - 1)
         y = random.randint(room.y1 + 1, room.y2 - 1)
 
-        if not any(entity.x == x and entity.y ==y for entity in dungeon.entities):
+        if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
             entity.spawn(dungeon, x, y)
 
 
@@ -204,5 +204,30 @@ def generate_dungeon(
 
         # Finally, append the new room to the list.
         rooms.append(new_room)
+
+    return dungeon
+
+
+def generate_arena(
+        map_width: int,
+        map_height: int,
+        engine: Engine,
+) -> GameMap:
+    # Generate an arena for testing.
+    player = engine.player
+    target_dummy = copy.deepcopy(entity_factories.target_dummy)
+    dungeon = GameMap(engine, map_width, map_height, entities=[player, target_dummy])
+
+    rooms: List[RectangularRoom] = []
+
+    # Build out the arena as a Rectangular Room to take advantage of other features
+    new_room = RectangularRoom(0, 0, dungeon.width - 1, dungeon.height - 1)
+    dungeon.tiles[new_room.inner] = tile_types.floor
+
+    player.place(map_width // 2, map_height - 3, gamemap=dungeon)
+    target_dummy.place(map_width // 2, 4, gamemap=dungeon)
+    place_entities(new_room, dungeon, engine.game_world.current_floor)
+
+    rooms.append(new_room)
 
     return dungeon

@@ -11,13 +11,65 @@ import tcod
 
 import color
 import entity_factories
-from entity_factories import leather_armor
-from game_map import GameWorld
 import input_handlers
 from engine import Engine
+from game_map import GameWorld
 
 # Load the background image and remove the alpha channel.
 background_image = tcod.image.load("menu_background.png")[:, :, :3]
+
+
+def generate_starting_equipment(player: entity_factories.player) -> None:
+    dagger = copy.deepcopy(entity_factories.dagger)
+    leather_armor = copy.deepcopy(entity_factories.leather_armor)
+
+    dagger.parent = player.inventory
+    leather_armor.parent = player.inventory
+
+    player.inventory.items.append(dagger)
+    player.equipment.toggle_equip(dagger, add_message=False)
+
+    player.inventory.items.append(leather_armor)
+    player.equipment.toggle_equip(leather_armor, add_message=False)
+
+
+def arena_game() -> Engine:
+    # Return an arena session as an Engine instance.
+    map_width = 80
+    map_height = 43
+
+    # Leave in useless numbers so they don't cause errors
+    # TODO: make them not cause errors
+    room_max_size = 80
+    room_min_size = 6
+    max_rooms = 30
+
+    fov_radius: int = 80
+
+    player = copy.deepcopy(entity_factories.player)
+
+    engine = Engine(player=player)
+
+    engine.game_world = GameWorld(
+        engine=engine,
+        max_rooms=max_rooms,
+        room_min_size=room_min_size,
+        room_max_size=room_max_size,
+        map_width=map_width,
+        map_height=map_height,
+        fov_radius=fov_radius
+    )
+
+    engine.game_world.generate_arena_floor()
+    engine.update_fov(fov_radius)
+
+    engine.message_log.add_message(
+        "Welcome to the Arena mode of Oops, I Barfed!", color.welcome_text
+    )
+
+    generate_starting_equipment(player)
+
+    return engine
 
 
 def new_game() -> Engine:
@@ -49,17 +101,7 @@ def new_game() -> Engine:
         "Hello and welcome, adventurer, to Oops, I Barfed!", color.welcome_text
     )
 
-    dagger = copy.deepcopy(entity_factories.dagger)
-    leather_armor = copy.deepcopy(entity_factories.leather_armor)
-
-    dagger.parent = player.inventory
-    leather_armor.parent = player.inventory
-
-    player.inventory.items.append(dagger)
-    player.equipment.toggle_equip(dagger, add_message=False)
-
-    player.inventory.items.append(leather_armor)
-    player.equipment.toggle_equip(leather_armor, add_message=False)
+    generate_starting_equipment(player)
 
     return engine
 
@@ -96,7 +138,7 @@ class MainMenu(input_handlers.BaseEventHandler):
 
         menu_width = 24
         for i, text in enumerate(
-                ["[N] New Game", "[C] Continue Last Game", "[Q] Quit"]
+                ["[N] New Game", "[C] Continue Last Game", "[A] Arena Mode", "[Q] Quit"]
         ):
             console.print(
                 console.width // 2,
@@ -123,5 +165,7 @@ class MainMenu(input_handlers.BaseEventHandler):
                 return input_handlers.PopupMessage(self, f"Failed to load save:\n{exc}")
         elif event.sym == tcod.event.KeySym.N:
             return input_handlers.MainGameEventHandler(new_game())
+        elif event.sym == tcod.event.KeySym.A:
+            return input_handlers.MainGameEventHandler(arena_game())
 
         return None

@@ -3,6 +3,7 @@ import traceback
 
 import tcod
 
+from components.tileset import tile_set
 import color
 import exceptions
 import input_handlers
@@ -20,9 +21,7 @@ def main() -> None:
     screen_width = 80
     screen_height = 50
 
-    tileset = tcod.tileset.load_tilesheet(
-        "dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD
-    )
+    tileset = tile_set()
 
     handler: input_handlers.BaseEventHandler = setup_game.MainMenu()
 

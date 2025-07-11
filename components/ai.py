@@ -112,3 +112,11 @@ class HostileEnemy(BaseAI):
             ).perform()
 
         return WaitAction(self.entity).perform()
+
+
+class TargetDummy(BaseAI):
+    def __init__(self, entity: Actor):
+        super().__init__(entity)
+
+    def perform(self) -> None:
+        return WaitAction(self.entity).perform()

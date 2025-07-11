@@ -1,4 +1,4 @@
-from components.ai import HostileEnemy
+from components.ai import HostileEnemy, TargetDummy
 from components import consumable, equippable
 from components.equipment import Equipment
 from components.fighter import Fighter
@@ -36,6 +36,16 @@ troll = Actor(
     fighter=Fighter(hp=16, base_defense=1, base_power=4),
     inventory=Inventory(capacity=0),
     level=Level(xp_given=100),
+)
+target_dummy = Actor(
+    char="&",
+    color=(152, 89, 27),
+    name="Target Dummy",
+    ai_cls=TargetDummy,
+    equipment=Equipment(),
+    fighter=Fighter(hp=100, base_defense=1, base_power=0),
+    inventory=Inventory(capacity=0),
+    level=Level(xp_given=200),
 )
 
 confusion_scroll = Item(
