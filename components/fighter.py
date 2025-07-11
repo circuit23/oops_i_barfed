@@ -87,3 +87,33 @@ class Fighter(BaseComponent):
 
     def take_damage(self, amount: int) -> None:
         self.hp -= amount
+
+
+class TargetDummy(Fighter):
+    def __init__(self, hp: int = 100, base_defense: int = 0, base_power: int = 0):
+        super().__init__(hp, base_defense, base_power)
+
+    @property
+    def hp(self) -> int:
+        return self._hp
+
+    @hp.setter
+    def hp(self, value: int) -> None:
+        self._hp = max(0, min(value, self.max_hp))
+        if self._hp == 0 and self.parent.ai:
+            self.die()
+
+    def die(self) -> None:
+        if self.engine.player is self.parent:
+            death_message = "Somehow, you died as a target dummy."
+            death_message_color = color.player_die
+        else:
+            death_message = "You killed the target dummy! Very... impressive?"
+            death_message_color = color.enemy_die
+
+        self.engine.message_log.add_message(death_message, death_message_color)
+        dummy_resurrect_message = "Setting dummy HP back to 100."
+        dummy_resurrect_message_color = color.health_recovered
+        self.engine.message_log.add_message(dummy_resurrect_message, dummy_resurrect_message_color)
+
+        self.hp = 100

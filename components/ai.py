@@ -114,7 +114,7 @@ class HostileEnemy(BaseAI):
         return WaitAction(self.entity).perform()
 
 
-class TargetDummy(BaseAI):
+class TargetDummyAi(BaseAI):
     def __init__(self, entity: Actor):
         super().__init__(entity)
 

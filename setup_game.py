@@ -100,6 +100,9 @@ def new_game() -> Engine:
     engine.message_log.add_message(
         "Hello and welcome, adventurer, to Oops, I Barfed!", color.welcome_text
     )
+    engine.message_log.add_message(
+        "Add entities, etc, to test in setup_game.py", color.welcome_text
+    )
 
     generate_starting_equipment(player)
 

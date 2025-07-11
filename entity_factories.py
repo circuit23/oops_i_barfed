@@ -1,7 +1,7 @@
-from components.ai import HostileEnemy, TargetDummy
+from components.ai import HostileEnemy, TargetDummyAi
 from components import consumable, equippable
 from components.equipment import Equipment
-from components.fighter import Fighter
+from components.fighter import Fighter, TargetDummy
 from components.inventory import Inventory
 from components.level import Level
 from entity import Actor, Item
@@ -41,9 +41,9 @@ target_dummy = Actor(
     char="&",
     color=(152, 89, 27),
     name="Target Dummy",
-    ai_cls=TargetDummy,
+    ai_cls=TargetDummyAi,
     equipment=Equipment(),
-    fighter=Fighter(hp=100, base_defense=1, base_power=0),
+    fighter=TargetDummy(hp=100, base_defense=1, base_power=0),
     inventory=Inventory(capacity=0),
     level=Level(xp_given=200),
 )
