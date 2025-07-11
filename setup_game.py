@@ -64,7 +64,8 @@ def arena_game() -> Engine:
     engine.update_fov(fov_radius)
 
     engine.message_log.add_message(
-        "Welcome to the Arena mode of Oops, I Barfed!", color.welcome_text
+        "Welcome to the Arena mode of Oops, I Barfed!\nAdd entities to test, etc, in setup_game.arena_game()",
+        color.welcome_text
     )
 
     generate_starting_equipment(player)
@@ -99,9 +100,6 @@ def new_game() -> Engine:
 
     engine.message_log.add_message(
         "Hello and welcome, adventurer, to Oops, I Barfed!", color.welcome_text
-    )
-    engine.message_log.add_message(
-        "Add entities, etc, to test in setup_game.py", color.welcome_text
     )
 
     generate_starting_equipment(player)
